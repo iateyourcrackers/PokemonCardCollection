@@ -1,33 +1,68 @@
+import ecs100.*;
 
 /**
  * Write a description of class Card here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (HJF)
+ * @version (20/5/25)
  */
 public class Card
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    // instance variables
+    private int id;
+    private String name;
+    private double value;
+    private String image;
+    static final String DEFAULT_IMAGE = "pokemon.jpg"; // set a default card image
 
     /**
      * Constructor for objects of class Card
      */
-    public Card()
+    public Card(int key, String nm, double price, String img)
     {
         // initialise instance variables
-        x = 0;
+        this.id = key;
+        this.name = nm;
+        this.value = price;
+        
+        // check if image is null
+        if (img == null) {
+            this.image = DEFAULT_IMAGE; // set the image to a default one
+        } else {
+            this.image = img;
+        }
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * Constructor for objects of class Card
      */
-    public int sampleMethod(int y)
+    public Card(int key, String nm, double price)
     {
         // put your code here
-        return x + y;
+        this(key, nm, price, DEFAULT_IMAGE);
+    }
+    
+    /**
+     * Get the int ID for the current card object.
+     * @return: int ID
+     */
+    public int getId() {
+        return this.id;
+    }
+    
+    /**
+     * Get the String NAME for the current card object.
+     * @return: String NAME
+     */
+    public String getName() {
+        return this.name;
+    }
+    
+    /**
+     * Get the double VALUE for the current card object.
+     * @return: double VALUE
+     */
+    public double getValue() {
+        return this.value;
     }
 }

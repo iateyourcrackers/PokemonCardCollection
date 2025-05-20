@@ -1,14 +1,17 @@
+import java.util.HashMap;
 
 /**
  * Write a description of class Cards here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (HFJ)
+ * @version (20/5/25)
  */
 public class Cards
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    // instance variables
+    private HashMap<Integer, Card> collection; // declare the hashmap
+    private int currCardId; // store the id number of the current card
+    private Card currCard; // store the instance of the current car
 
     /**
      * Constructor for objects of class Cards
@@ -16,18 +19,29 @@ public class Cards
     public Cards()
     {
         // initialise instance variables
-        x = 0;
+        collection = new HashMap<Integer, Card>(); // initialise the hashmap
+        
+        // putting some of my cards in there >:)
+        Card c1 = new Card(1, "Slowpoke", 20.0, "slowpoke.jpg");
+        Card c2 = new Card(2, "Roserade", 30.0, "roserade.jpg");
+        Card c3 = new Card(3, "Nidoqueen", 40.0, "nidoqueen.jpg");
+        
+        // put them into the collection
+        collection.put(1, c1);
+        collection.put(2, c2);
+        collection.put(3, c3);
+        
+        // set the current amount of cards to 3
+        this.currCardId = 3;
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * Increase the current count of cards in the collection by 1.
      */
-    public int sampleMethod(int y)
+    public void setCardId()
     {
-        // put your code here
-        return x + y;
+        this.currCardId += 1;
     }
+    
+    
 }
