@@ -24,7 +24,7 @@ public class GUI
         UI.initialise();
         UI.addButton("Add a new Pokemon card" , this::addCard); // to do
         UI.addButton("Search for a Pokemon card" , this::findCard); // to do
-        UI.addButton("Hide current Pokemon card's details", this::hideCard); // to do and figure out tbh
+        UI.addButton("Hide all Pokemon card details", this::hideAll); // to do and figure out tbh
         UI.addButton("Display all Pokemon cards", this::displayAll); //to do AND FIGURE OUT HOW AM I GONNA DO THIS
         UI.addButton("Quit", UI::quit);
     }
@@ -61,15 +61,16 @@ public class GUI
      * Check the String input from the user.
      */
     public String checkString() {
-        
-        String name;
-        
         // do i need to find the longest pokemon name??
-        name = UI.askString("Enter the Pokemon's name: ").trim().toLowerCase();
+        String name = UI.askString("Enter the Pokemon's name: ").trim().toUpperCase();
         
-        if (name.equals(null)) {
-            
-        }
+        do {
+            if (name.equals(null)) {
+                UI.println("Hey enter something here please");
+            }
+        } while (name.equals(null));
+    
+        return name;
     }
 
     /**
@@ -77,20 +78,63 @@ public class GUI
      * 
      */
     public void findCard() {
-        // ok
+        // get the user details
+        String name = checkString();
+        
+        // check if the card already exists, then add to collection
+        if (this.collection.findCard(name)) {
+            // if found, display its info
+            UI.println("Found the pokemon card");
+            this.currCard = collection.getCard();
+            
+            // display the card info
+            this.currCard.displayCard();
+            UI.println("Pokemon name: " + this.currCard.getName());
+            UI.println("Monetary value: " + this.currCard.getValue());
+        } else {
+            // if not found, display an error message
+            UI.println("You don't have this card in your collection.");
+        }
     }
     
     /**
-     * add a new card to the collection
+     * Add a new card to the collection.
+     * Only allow new Pokemon to be added to the collection (no double ups).
      */
     public void addCard() {
         // get the user details
         String name = checkString();
-        double value = checkValue();
         
         // check if the card already exists, then add to collection
+        if (this.collection.findCard(name)) {
+            // if already in collection, print error message
+            UI.println("This card already exists in your collection.");
+            
+        } else {
+            // if not found, run through checkers then add to collection
+            double value = checkValue();
+            String imgFileName = UIFileChooser.open("Choose Image File: ");
+            
+            // add card with image
+            this.collection.addCard(name, value, imgFileName);
+        }
         
-        
+    }
+    
+    /**
+     * Hide the current card's details
+     */
+    public void hideAll() {
+        // just clear the gui??
+        UI.clearGraphics();
+    }
+    
+    /**
+     * Show the info for all cards
+     */
+    public void displayAll() {
+        // hihi
+        this.collection.printAllCards();
     }
     
     /**

@@ -43,6 +43,20 @@ public class Card
     }
     
     /**
+     * Display a singular card's image on the GUI.
+     */
+    public void displayCard() {
+        // draw the card cover
+        int locX = 50; // image x start position
+        int locY = 50; // image y start position
+        
+        final double WIDTH = 250;
+        final double HEIGHT = 350;
+        
+        UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
+    }
+    
+    /**
      * Get the int ID for the current card object.
      * @return: int ID
      */
@@ -56,6 +70,14 @@ public class Card
      */
     public String getName() {
         return this.name;
+    }
+    
+    /**
+     * Get the String IMAGE for the current card object
+     * @return: String IMAGE
+     */
+    public String getImage() {
+        return this.image;
     }
     
     /**
