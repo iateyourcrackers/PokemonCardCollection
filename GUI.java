@@ -8,7 +8,8 @@ import ecs100.*;
  */
 public class GUI
 {
-    // instance variables - replace the example below with your own
+    // instance variables
+    private double startX, startY; // fields to remember mouse input ('pressed' position)
     private Card currCard;
     private Cards collection;
 
@@ -22,33 +23,63 @@ public class GUI
         
         // initalise the GUI
         UI.initialise();
-        UI.addButton("Add a new Pokemon card" , this::addCard); // to do
-        UI.addButton("Search for a Pokemon card" , this::findCard); // to do
-        UI.addButton("Hide all Pokemon card details", this::hideAll); // to do and figure out tbh
-        UI.addButton("Display all Pokemon cards", this::displayAll); //to do AND FIGURE OUT HOW AM I GONNA DO THIS
+        UI.setMouseListener(this::doMouse);
+        
+        // add UI buttons
+        UI.addButton("Add a new Pokemon card" , this::addCard);
+        UI.addButton("Search for a Pokemon card" , this::displayOne);
+        UI.addButton("Hide all Pokemon card details", this::hideAll);
+        UI.addButton("Display all Pokemon cards", this::displayAll);
         UI.addButton("Quit", UI::quit);
     }
     
     /**
+     * Flip the image by checking mouse action.
+     */
+    public void doMouse(String action, double x, double y) {
+        clearImage(action, x, y);
+    }
+    
+    /**
+     * hehehe
+     */
+    public void clearImage(String action, double x, double y) {
+        if (currCard == null) {
+            UI.println("No card currently selected.");
+            UI.println();
+        } else {
+            if (action.equals("pressed")) {
+                this.startX = x;
+                this.startY = y;
+            } else if (action.equals("released")) {
+                // fix this later
+                if (currCard.onCard(x, y)) {
+                    currCard.hideCard();
+                }
+            }
+        }
+    }
+    
+    /**
      * Check if the double input from the user is within range.
-     * Range: $0 - $8,901,676.55
-     * Converted to NZD, the most expensive Pokemon card was bought by Logan Paul in 2022.
-     * 
+     * Range: $0 - $260,000
+     * See README.TXT file if you want the reason for the max price :)
      * @return: double VALUE (if valid)
      */
     public double checkValue() {
-        final double MAX_VALUE = 8901676.55; // this is flipping crazy
+        final double MAX_VALUE = 260000; // see README.TXT file
         double value;
         
         // check the boundaries for the card's price
         do {
             value = UI.askDouble("Enter the card's monetary value: ");
+            
             if ((value >= 0) && (value <= MAX_VALUE)) {
                 UI.println("Accepted.");
             } else if (value > MAX_VALUE) {
                 UI.println("YOU PAID HOW MUCH FOR THIS CARD???");
             } else if (value < 0) {
-                UI.println("Must be equalto/greater than 0.");
+                UI.println("Must be equal to/greater than 0.");
             } else {
                 UI.println("That's not a number??");
             }
@@ -59,40 +90,55 @@ public class GUI
     
     /**
      * Check the String input from the user.
+     * See README.TXT file if you want the reason for the max length :)
+     * @return: String NAME (if valid)
      */
     public String checkString() {
-        // do i need to find the longest pokemon name??
-        String name = UI.askString("Enter the Pokemon's name: ").trim().toUpperCase();
+        // variables, constants
+        final int MIN_LENGTH = 3; // see README.TXT file
+        final int MAX_LENGTH = 12;
+        String name;
         
+        // keep asking until a valid name is entered
         do {
-            if (name.equals(null)) {
+            name = UI.askString("Enter the Pokemon's name: ").trim().toUpperCase();
+            
+            if (name == null || name.isEmpty()) {
                 UI.println("Hey enter something here please");
-            }
-        } while (name.equals(null));
-    
+            } else if (name.length() > MAX_LENGTH) {
+                UI.println("This pokemon name is too long (it also doesn't exist?)");
+            } else if (name.length() < MIN_LENGTH) {
+                UI.println("This Pokemon name is too short (it also doesn't exist?)");
+            } 
+        } while (name == null || name.isEmpty()
+        || name.length() > MAX_LENGTH || name.length() < MIN_LENGTH);
+        
+        UI.println("Accepted.");
         return name;
     }
 
     /**
      * Search for a card by the Pokemon's name.
-     * 
+     * Display Pokemon card if found, print error message if not found.
      */
-    public void findCard() {
-        // get the user details
+    public void displayOne() {
+        hideAll(); // clear the graphics first
+        
+        // get the card name from user
         String name = checkString();
         
-        // check if the card already exists, then add to collection
+        // check if the card exists
         if (this.collection.findCard(name)) {
-            // if found, display its info
+            // if found, set to current card
             UI.println("Found the pokemon card");
             this.currCard = collection.getCard();
             
             // display the card info
-            this.currCard.displayCard();
+            this.currCard.displayImage();
             UI.println("Pokemon name: " + this.currCard.getName());
             UI.println("Monetary value: " + this.currCard.getValue());
         } else {
-            // if not found, display an error message
+            // if not found, display error message
             UI.println("You don't have this card in your collection.");
         }
     }
@@ -102,43 +148,40 @@ public class GUI
      * Only allow new Pokemon to be added to the collection (no double ups).
      */
     public void addCard() {
-        // get the user details
+        // get the card name from user
         String name = checkString();
         
-        // check if the card already exists, then add to collection
+        // check if card already exists
         if (this.collection.findCard(name)) {
             // if already in collection, print error message
             UI.println("This card already exists in your collection.");
             
         } else {
-            // if not found, run through checkers then add to collection
+            // if not in collection, ask for rest of card info
             double value = checkValue();
             String imgFileName = UIFileChooser.open("Choose Image File: ");
             
-            // add card with image
+            // add card to collection
             this.collection.addCard(name, value, imgFileName);
         }
-        
     }
     
     /**
-     * Hide the current card's details
+     * Hide every card's details.
      */
     public void hideAll() {
-        // just clear the gui??
         UI.clearGraphics();
     }
     
     /**
-     * Show the info for all cards
+     * Show the info for all cards.
      */
     public void displayAll() {
-        // hihi
         this.collection.printAllCards();
     }
     
     /**
-     * Main routine
+     * Main routine.
      */
     public static void main(String[] args) {
         new GUI();

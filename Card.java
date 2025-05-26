@@ -9,11 +9,12 @@ import ecs100.*;
 public class Card
 {
     // instance variables
+    public boolean isVisible = false; // initially not showing
     private int id;
     private String name;
     private double value;
     private String image;
-    static final String DEFAULT_IMAGE = "pokemon.jpg"; // set a default card image
+    static final String DEFAULT_IMAGE = "pokemon.png"; // set a default card image
 
     /**
      * Constructor for objects of class Card
@@ -43,17 +44,41 @@ public class Card
     }
     
     /**
+     * Report if the mouse point (mx, my) is on the card.
+     * @return: boolean TRUE or FALSE
+     */
+    public boolean onCard(double mx, double my) {
+        if ((mx >= 50 && mx <= 400) && (my >= 50 && my <= 540)) {
+            return true && isVisible;
+        } else {
+            return false && isVisible;
+        }
+    }
+    
+    /**
      * Display a singular card's image on the GUI.
      */
-    public void displayCard() {
-        // draw the card cover
+    public void displayImage() {
         int locX = 50; // image x start position
-        int locY = 50; // image y start position
-        
-        final double WIDTH = 250;
-        final double HEIGHT = 350;
-        
+        int locY = 50; // image y start position   
+        final double WIDTH = 350; // image width
+        final double HEIGHT = 490; // image height
+    
+        // display the image
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
+        UI.println("CARD SHOULD BE SHOWING");
+        UI.println();
+        this.isVisible = true;
+    }
+    
+    /**
+     * Hide the card. Don't allow the user to flip it again/display
+     */
+    public void hideCard() {
+        if (this.isVisible) {
+            this.isVisible = false;
+            UI.clearGraphics();
+        }
     }
     
     /**

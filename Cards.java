@@ -23,12 +23,21 @@ public class Cards
         collection = new HashMap<Integer, Card>(); // initialise the hashmap
         
         // putting some of my cards in there >:)
-        Card c1 = new Card(1, "SLOWPOKE", 20.0, "slowpoke.png");
-        Card c2 = new Card(2, "HYDREIGON", 30.0, "hydreigon.jpg");
-        Card c3 = new Card(3, "DRAGONITE", 40.0, "dragonite.jpg");
-        Card c4 = new Card(4, "NIDOQUEEN", 40.0, "nidoqueen.png");
-        Card c5 = new Card(5, "VOLCARONA", 40.0, "volcarona.jpeg");
-        Card c6 = new Card(6, "METAGROSS", 40.0, "metagross.png");
+        Card c1 = new Card(1, "DRAGONITE", 4.18, "dragonite.jpg");
+        Card c2 = new Card(2, "HYDREIGON", 15.59, "hydreigon.jpg");
+        Card c3 = new Card(3, "ROSERADE", 2.0, "roserade.jpg");
+        Card c4 = new Card(4, "LEAFEON", 104.85, "leafeon.jpg");
+        Card c5 = new Card(5, "VOLCARONA", 2.0, "volcarona.jpg");
+        Card c6 = new Card(6, "SALAMENCE", 2.56, "salamence.png");
+        Card c7 = new Card(7, "CLEFAIRY", 153.12, "clefairy.jpg");
+        Card c8 = new Card(8, "MAGNEZONE", 2.43, "magnezone.jpg");
+        
+        // when testing, you can add slowpoke, sylveon, nidoqueen, and metagross
+        // price guides for the actual cards are below:
+        // nidoqueen: no set price (as its not a real card)
+        // slowpoke: $19.55
+        // sylveon: $121.25
+        // metagross: $2.99
         
         // put them into the collection
         collection.put(1, c1);
@@ -37,9 +46,11 @@ public class Cards
         collection.put(4, c4);
         collection.put(5, c5);
         collection.put(6, c6);
+        collection.put(7, c7);
+        collection.put(8, c8);
         
-        // set the current amount of cards to 6
-        this.currCardId = 6;
+        // set the current amount of cards to 8
+        this.currCardId = 8;
     }
 
     /**
@@ -95,30 +106,48 @@ public class Cards
     }
     
     /**
-     * Print all the cards in the collection.
+     * Print all the cards in the collection in rows.
      */
     public void printAllCards() {
-        double imgSpace = 40;
-        final double WIDTH = 200;
-        final double HEIGHT = 280;
-        int cardCount = 0;
-        double locY = imgSpace;
+        // variables
+        double imgSpace = 30;
+        final double WIDTH = 150;
+        final double HEIGHT = 210;
+        int cardCount = 1;
+        double locY;
+        double locX;
+        int row = 1;
         
         for (int cardId: collection.keySet()) {
-            // this took me an embarrasingly amount of time to figure out
-            double locX = (imgSpace * cardId) + (WIDTH * (cardId - 1));
+            // increase X positioning to the left for each card
+            if (cardCount == 1) {
+                locX = imgSpace;
+            } else {
+                locX = (imgSpace * cardCount) + (WIDTH * (cardCount - 1));
+            }
             
-            UI.drawString(cardId + " Details: ", locX, locY + HEIGHT + 20); //change this to draw string later
-            UI.drawString(collection.get(cardId).getName() + " "
-            + collection.get(cardId).getValue(), locX, locY + HEIGHT + 40);
+            // change Y postioning depending on the row
+            if (row == 1) {
+                locY = imgSpace;
+            } else {
+                // not row 1
+                locY = (2 * imgSpace * row) + (HEIGHT * (row - 1));
+            }
             
-            // add a draw image thing here too
-            UI.drawImage(collection.get(cardId).getImage(), locX, locY, WIDTH, HEIGHT);
+            // draw the image using the dimensions
+            Card card = collection.get(cardId);
+            UI.drawImage(card.getImage(), locX, locY, WIDTH, HEIGHT);
             
-            cardCount += 1;
-            // change the Y postiioning if three cards are displayed on one row
-            if (cardCount == 3) {
-                locY = (imgSpace * cardId) + (HEIGHT * (cardId - 1));
+            // display details under image
+            UI.drawString("Card " + cardId + " Details: ", locX, locY + HEIGHT + 20);
+            UI.drawString(card.getName() + ", $" + card.getValue(), locX, locY + HEIGHT + 40);
+            
+            cardCount += 1; // increase no. of cards in the row
+            
+            // check if new row needs to be started
+            if (cardCount == 6) {
+                row += 1; // start a new row
+                cardCount = 1; // reset X positioning
             }
         }
     }
