@@ -1,7 +1,8 @@
 import ecs100.*;
 
 /**
- * Write a description of class Card here.
+ * This class is the support class for both the Cards class and also the GUI class.
+ * This class manages all of the individual card objects
  *
  * @author (HJF)
  * @version (20/5/25)
@@ -9,15 +10,21 @@ import ecs100.*;
 public class Card
 {
     // instance variables
-    public boolean isVisible = false; // initially not showing
     private int id;
     private String name;
     private double value;
     private String image;
+    private boolean isVisible = false; // selected card is initially not visible
     static final String DEFAULT_IMAGE = "pokemon.png"; // set a default card image
+    
+    // coordinates for top left corner of image
+    private double locX = 50;
+    private double locY = 50;  
+    private double WIDTH = 350; // image dimensions
+    private double HEIGHT = 490;
 
     /**
-     * Constructor for objects of class Card
+     * Constructor for objects of class Card.
      */
     public Card(int key, String nm, double price, String img)
     {
@@ -35,44 +42,35 @@ public class Card
     }
 
     /**
-     * Constructor for objects of class Card
+     * Constructor for objects of class Card.
      */
     public Card(int key, String nm, double price)
     {
-        // put your code here
         this(key, nm, price, DEFAULT_IMAGE);
     }
     
     /**
-     * Report if the mouse point (mx, my) is on the card.
+     * Return TRUE if the user's mouse click (mx, my) is within the visible card area.
+     * Only returns TRUE if the card is currently being displayed.
      * @return: boolean TRUE or FALSE
      */
     public boolean onCard(double mx, double my) {
-        if ((mx >= 50 && mx <= 400) && (my >= 50 && my <= 540)) {
-            return true && isVisible;
-        } else {
-            return false && isVisible;
-        }
+        return ((mx >= locX && mx <= locX + WIDTH) 
+        && (my >= locY && my <= locY + HEIGHT)) && isVisible;
     }
     
     /**
-     * Display a singular card's image on the GUI.
+     * Draw the stored current card's image on the GUI.
      */
     public void displayImage() {
-        int locX = 50; // image x start position
-        int locY = 50; // image y start position   
-        final double WIDTH = 350; // image width
-        final double HEIGHT = 490; // image height
-    
-        // display the image
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
-        UI.println("CARD SHOULD BE SHOWING");
-        UI.println();
-        this.isVisible = true;
+        this.isVisible = true; // change the visibility of the card
     }
     
     /**
-     * Hide the card. Don't allow the user to flip it again/display
+     * Hide the current card displayed.
+     * Only hides if the card is currently visible (showing), so the user cannot
+     * redisplay it accidentally.
      */
     public void hideCard() {
         if (this.isVisible) {
@@ -82,34 +80,37 @@ public class Card
     }
     
     /**
-     * Get the int ID for the current card object.
-     * @return: int ID
+     * @return: int ID for current card object
      */
     public int getId() {
         return this.id;
     }
     
     /**
-     * Get the String NAME for the current card object.
-     * @return: String NAME
+     * @return: String NAME for current card object
      */
     public String getName() {
         return this.name;
     }
     
     /**
-     * Get the String IMAGE for the current card object
-     * @return: String IMAGE
+     * @return: String IMAGE for current card object
      */
     public String getImage() {
         return this.image;
     }
     
     /**
-     * Get the double VALUE for the current card object.
-     * @return: double VALUE
+     * @return: double VALUE for current card object
      */
     public double getValue() {
         return this.value;
+    }
+    
+    /**
+     * @return: boolean ISVISIBLE for current card object
+     */
+    public boolean getIsVisible() {
+        return this.isVisible;
     }
 }
