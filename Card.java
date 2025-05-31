@@ -1,14 +1,14 @@
 import ecs100.*;
 
 /**
- * This class is the support class for both the Cards class and also the GUI class.
- * This class manages all of the individual card objects
+ * The Card class is the support class for the Cards and GUI classes.
+ * This class is responsible for managing the individual card objects.
+ * Attributes to a Card contains the id, name, monetary value, and image.
  *
  * @author (HJF)
  * @version (20/5/25)
  */
-public class Card
-{
+public class Card {
     // instance variables
     private int id;
     private String name;
@@ -20,8 +20,8 @@ public class Card
     // coordinates for top left corner of image
     private double locX = 50;
     private double locY = 50;  
-    private double WIDTH = 350; // image dimensions
-    private double HEIGHT = 490;
+    private final double WIDTH = 350; // image dimensions
+    private final double HEIGHT = 490;
 
     /**
      * Constructor for objects of class Card.
@@ -50,9 +50,10 @@ public class Card
     }
     
     /**
-     * Return TRUE if the user's mouse click (mx, my) is within the visible card area.
+     * Check whether the mouse's click (mx, my) is within the bounds of the image.
      * Only returns TRUE if the card is currently being displayed.
-     * @return: boolean TRUE or FALSE
+     * @return TRUE if the mouse click is within the card area
+     * @return FALSE if the mouse click is NOT within the card area
      */
     public boolean onCard(double mx, double my) {
         return ((mx >= locX && mx <= locX + WIDTH) 
@@ -80,7 +81,7 @@ public class Card
     }
     
     /**
-     * @return: int ID for current card object
+     * @return int ID for current card object
      */
     public int getId() {
         return this.id;
@@ -94,21 +95,21 @@ public class Card
     }
     
     /**
-     * @return: String IMAGE for current card object
+     * @return String IMAGE for current card object
      */
     public String getImage() {
-        return this.image;
+      return this.image;
     }
     
     /**
-     * @return: double VALUE for current card object
+     * @return double VALUE for current card object
      */
     public double getValue() {
         return this.value;
     }
     
     /**
-     * @return: boolean ISVISIBLE for current card object
+     * @return boolean ISVISIBLE for current card object
      */
     public boolean getIsVisible() {
         return this.isVisible;

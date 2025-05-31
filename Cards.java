@@ -2,11 +2,11 @@ import java.util.HashMap;
 import ecs100.*;
 
 /**
- * This class handles the collection of cards that the user adds and displays card from.
- * This class uses the collection datatype of a HashMap to manage and pass through info to the Card class, and back again to the GUI class.
- * It uses the total amount of cards to keep track of the collection. 
- * Sends info to the GUI class such as findCard.
- * Pulls info from the Card class such as getValue.
+ * The Cards class is responsible for directly handling the user's collection of cards.
+ * It uses the HashMap datatype to manage the cards, and the total amount of cards to keep track of the collection.
+ * Info is passed to the Card and GUI classes:
+ * Sends info to the GUI class through HashMap iterations.
+ * Pulls individual card info from the Card class through getters.
  * 
  * @author (HFJ)
  * @version (20/5/25)
@@ -55,15 +55,16 @@ public class Cards
     private void setCardId()
     {
         this.currCardId += 1;
+        UI.println("Current card ID increased to: " + currCardId);
     }
     
     /**
      * Check if a card currently exists in the collection using its name.
      * Take in String (name) parameter. Iterate over the collection's keys to 
      * find a possible match in any of the Pokemon cards' names.
-     * @param: String NAME, double VALUE
-     * @return: boolean TRUE if a match is found
-     *          boolean FALSE if no match is found
+     * @param String NAME, double VALUE
+     * @return boolean TRUE if a match is found
+     * @return boolean FALSE if no match is found
      */
     public boolean findCard(String name) {
         // search through each key in the hashmap
@@ -79,70 +80,45 @@ public class Cards
     
     /**
      * Add a new card to the collection with its own unique ID. No image included.
-     * @param: String NAME, double VALUE
+     * @param String NAME, double VALUE
      */
     public void addCard(String name, double value) {
         this.setCardId();
         collection.put(currCardId, new Card(currCardId, name, value));
+        UI.println("card added successfully. (CARDS CLASS)");
     }
     
     /**
      * Add a new card to the collection with its own unique ID. Includes image.
-     * @param: String NAME, double VALUE, String IMG
+     * @param String NAME, double VALUE, String IMG
      */
     public void addCard(String name, double value, String img) {
         this.setCardId();
         collection.put(currCardId, new Card(currCardId, name, value, img));
+        UI.println("card added successfully. (CARDS CLASS)");
     }
     
     /**
      * Getter for the current card object.
-     * @return: Card CURRCARD
+     * @return Card CURRCARD
      */
-    public Card getCard() {
+    public Card getCurrCard() {
         return this.currCard;
     }
     
     /**
-     * Print all the cards in the collection in rows.
+     * Getter for the current card object by its ID.
+     * @return Card card
      */
-    public void printAllCards() {
-        // variables, constants
-        double imgSpace = 30;
-        final double WIDTH = 150;
-        final double HEIGHT = 210;
-        int cardInRow = 1;
-        double locY;
-        double locX;
-        int row = 1;
-        
-        for (int cardId: collection.keySet()) {
-            // increase X positioning to the right for each new card displayed
-            locX = (imgSpace * cardInRow) + (WIDTH * (cardInRow - 1));
-                        
-            // change Y postioning depending on the row
-            if (row == 1) {
-                locY = imgSpace;
-            } else {
-                // not row 1
-                locY = (2 * imgSpace * row) + (HEIGHT * (row - 1));
-            }
-            
-            // draw the image using the dimensions
-            Card card = collection.get(cardId);
-            UI.drawImage(card.getImage(), locX, locY, WIDTH, HEIGHT);
-            
-            // display details under image
-            UI.drawString("Card " + cardId + " Details: ", locX, locY + HEIGHT + 20);
-            UI.drawString(card.getName() + ", $" + card.getValue(), locX, locY + HEIGHT + 40);
-            
-            cardInRow += 1; // increase no. of cards in the row
-            
-            // check if new row needs to be started
-            if (cardInRow == 6) {
-                row += 1; // start a new row
-                cardInRow = 1; // reset X positioning for next row
-            }
-        }
+    public Card getCardById(int id) {
+        return this.collection.get(id);
+    }
+    
+    /**
+     * Getter for the current max cards in collection.
+     * @return int CURRCARDID
+     */
+    public int getCurrCardId() {
+        return this.currCardId;
     }
 }
