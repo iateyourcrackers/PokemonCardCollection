@@ -1,9 +1,8 @@
 import ecs100.*;
 
 /**
- * The Card class is the support class for the Cards and GUI classes.
- * This class is responsible for managing the individual card objects.
- * Attributes to a Card contains the id, name, monetary value, and image.
+ * Support class for the Cards and GUI classes to manage individual card data.
+ * Store the id, name, monetary value, image path and drawing positioning, and current visibility.
  *
  * @author (HJF)
  * @version (20/5/25)
@@ -14,8 +13,8 @@ public class Card {
     private String name;
     private double value;
     private String image;
-    private boolean isVisible = false; // selected card is initially not visible
-    static final String DEFAULT_IMAGE = "pokemon.png"; // set a default card image
+    private boolean currVisibility = false; // True if the card is being displayed
+    static final String DEFAULT_IMAGE = "pokemon.png"; // set a default/fallback card image
     
     // coordinates for top left corner of image
     private double locX = 50;
@@ -24,7 +23,8 @@ public class Card {
     private final double HEIGHT = 490;
 
     /**
-     * Constructor for objects of class Card.
+     * Constructor for objects of class Card with a given id, name, value.
+     * Uses a default image if the path is null.
      */
     public Card(int key, String nm, double price, String img)
     {
@@ -33,16 +33,16 @@ public class Card {
         this.name = nm;
         this.value = price;
         
-        // check if image is null
+        // check image path
         if (img == null) {
-            this.image = DEFAULT_IMAGE; // set the image to a default one
+            this.image = DEFAULT_IMAGE; // no path provided
         } else {
             this.image = img;
         }
     }
 
     /**
-     * Constructor for objects of class Card.
+     * Constructor for objects of class Card using the default image.
      */
     public Card(int key, String nm, double price)
     {
@@ -50,68 +50,66 @@ public class Card {
     }
     
     /**
-     * Check whether the mouse's click (mx, my) is within the bounds of the image.
-     * Only returns TRUE if the card is currently being displayed.
-     * @return TRUE if the mouse click is within the card area
-     * @return FALSE if the mouse click is NOT within the card area
+     * Check if the mouse's click (mx, my) is within the image bounds.
+     * Card must be currently displaying to return true.
+     * @return true if (mx, my) is within the card area. Returns false if 
+     * (mx, my) is NOT within the card area
      */
     public boolean onCard(double mx, double my) {
-        return ((mx >= locX && mx <= locX + WIDTH) 
-        && (my >= locY && my <= locY + HEIGHT)) && isVisible;
+        return ((mx >= locX && mx <= locX + WIDTH) && (my >= locY && my <= locY + HEIGHT)) 
+        && currVisibility;
     }
     
     /**
-     * Draw the stored current card's image on the GUI.
+     * Draw the card's image on the GUI and marks it as visible.
      */
     public void displayImage() {
         UI.drawImage(this.image, locX, locY, WIDTH, HEIGHT);
-        this.isVisible = true; // change the visibility of the card
+        this.currVisibility = true;
     }
     
     /**
-     * Hide the current card displayed.
-     * Only hides if the card is currently visible (showing), so the user cannot
-     * redisplay it accidentally.
+     * Hides the card by clearing the pane if it is currently visible.
      */
     public void hideCard() {
-        if (this.isVisible) {
-            this.isVisible = false;
+        if (this.currVisibility) {
+            this.currVisibility = false; // prevent user from redisplaying it accidentally
             UI.clearGraphics();
         }
     }
     
     /**
-     * @return int ID for current card object
+     * @return the card's id
      */
     public int getId() {
         return this.id;
     }
     
     /**
-     * @return: String NAME for current card object
+     * @return the card's name
      */
     public String getName() {
         return this.name;
     }
     
     /**
-     * @return String IMAGE for current card object
+     * @return the card's image path
      */
     public String getImage() {
       return this.image;
     }
     
     /**
-     * @return double VALUE for current card object
+     * @return the card's monetary value
      */
     public double getValue() {
         return this.value;
     }
     
     /**
-     * @return boolean ISVISIBLE for current card object
+     * @return whether the card is currently visible
      */
-    public boolean getIsVisible() {
-        return this.isVisible;
+    public boolean getCurrVisibility() {
+        return this.currVisibility;
     }
 }

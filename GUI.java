@@ -1,12 +1,11 @@
 import ecs100.*;
 
 /**
- * This GUI class is responsible for interacting with the user through a graphical format.
- * It will pass on information to the Cards class, and take info from both the Card and Cards class to successfully display the intended function for the user.
+ * Responsible for interacting with the user through a graphical format.
+ * Passes on info to the Cards class, and takes info from both the Card and Cards class to successfully display the intended function for the user.
  * Functions include the adding of a new Pokemon card, the displaying of 
  * all Pokemon cards currently held in the collection (which is obtained from 
  * the Cards class), searching for a specific card, and hiding all displayed cards.
- * The program checks and validates any input to provide a seamless user experience.
  *
  * @author (HFJ)
  * @version (20/5/25)
@@ -16,6 +15,10 @@ public class GUI
     // instance variables
     private Card currCard;
     private Cards collection;
+    
+    private static final int MAX_ROWS_ON_GUI = 3; // max full rows able to be displayed
+    private static final int CARDS_PER_ROW = 5;
+    private static final int TOTAL_CARDS_ON_GUI = MAX_ROWS_ON_GUI * CARDS_PER_ROW;
 
     /**
      * Constructor for objects of class GUI.
@@ -42,13 +45,13 @@ public class GUI
      * All conditions must equal TRUE to hide the card successfully.
      * Conditions: mouse click on a card currently being displayed (visible)
      * 
-     * @param ACTION which tracks the user mouse action 
-     * @param X corresponding to the mouse's X position
-     * @param Y corresponding to the mouse's Y position
+     * @param action which tracks the user mouse action 
+     * @param x      corresponding to the mouse's X position
+     * @param y      corresponding to the mouse's Y position
      */
     public void doMouse(String action, double x, double y) {
         if (action.equals("clicked") && currCard != null 
-            && currCard.getIsVisible() && currCard.onCard(x, y)) {
+            && currCard.getCurrVisibility() && currCard.onCard(x, y)) {
             // if true, clear the graphics
             this.currCard.hideCard();
         }
@@ -60,7 +63,7 @@ public class GUI
      * Keep asking the user for a price until a valid input is entered.
      * Range: $0.0 - $260,000.0
      * See README.TXT file if you want the reason for the boundary max price!
-     * @return double VALUE if valid
+     * @return value of the card
      */
     private double checkValue() {
         final double MAX_VALUE = 260000.0; // see README.TXT file
@@ -71,29 +74,30 @@ public class GUI
             value = UI.askDouble("Enter the card's monetary value: ");
             
             if ((value >= 0) && (value <= MAX_VALUE)) {
-                UI.println("Value accepted."); // test purposes
-                UI.println("value entered:" + value);
+                UI.println("Value accepted.");
             } else if (value > MAX_VALUE) {
                 UI.println("That's almost the price of a house these days woah");
-                UI.println("Try again - the value must be equal to/less than $260k");
+                UI.println("Try again - the value must be equal to/less than $260,000.");
+                UI.println();
             } else if (value < 0) {
                 UI.println("The value must be equal to/greater than 0.");
+                UI.println();
             } else {
                 UI.println("Please enter a number.");
+                UI.println();
             }
         } while (0 > value || value > MAX_VALUE);
         
         // round the entered value to 2dp
         double roundedValue = Math.round(value * 100.0) / 100.0;
-        UI.println("rounded value: " + roundedValue);
-        
+        UI.println();
         return roundedValue;
     }
     
     /**
      * Check the String input from the user.
      * See README.TXT file if you want the reason for the boundary max length!
-     * @return String NAME if valid
+     * @return name if valid
      */
     private String checkString() {
         // variables, constants
@@ -115,7 +119,6 @@ public class GUI
         } while (name == null || name.isEmpty()
         || name.length() > MAX_LENGTH || name.length() < MIN_LENGTH);
         
-        UI.println("String (name) accepted.");
         UI.println();
         return name;
     }
@@ -125,7 +128,7 @@ public class GUI
      * A valid file means it must be an image (jpeg, jpg, png). Webp are not 
      * accepted as BlueJ doesn't support their file type.
      * Keep asking the user for a image until a valid one is entered.
-     * @return String IMGFILE if valid
+     * @return the image path if valid
      */
     private String checkImage() {
         boolean loop = true;
@@ -144,7 +147,6 @@ public class GUI
             if (lower.endsWith(".jpg") || lower.endsWith(".jpeg") 
             || lower.endsWith(".png")) {
                 // return valid image
-                UI.println("accepted image."); // test
                 return imgFile;
             } else {
                 UI.println("That's not a valid image file. Please choose a .jpg or .jpeg or .png.");
@@ -167,7 +169,7 @@ public class GUI
         // check if the card exists
         if (this.collection.findCard(name)) {
             // if found, set to current card
-            UI.println("Found the pokemon card");
+            UI.println("Displaying the card's info...");
             this.currCard = this.collection.getCurrCard();
             
             // display the card info
@@ -191,14 +193,15 @@ public class GUI
         final double TEXT_SPACE = IMG_SPACE/3;
         final double WIDTH = 129;
         final double HEIGHT = 180;
-        final int MAX_ROWS_ON_GUI = 3; // max full rows able to be displayed
-        final int CARDS_PER_ROW = 5;
-        final int TOTAL_CARDS_ON_GUI = MAX_ROWS_ON_GUI * CARDS_PER_ROW;
         int cardInRow = 0;
         double locY;
         int row = 1;
         
-        for (int cardId = 1; cardId <= this.collection.getCurrCardId(); cardId++) {
+        // prepare for card overflow
+        UI.println("Any GUI card overflow printed here!");
+        UI.println();
+        
+        for (int cardId = 1; cardId <= this.collection.getCardIdTracker(); cardId++) {
             Card card = this.collection.getCardById(cardId);
             
             if (cardId <= TOTAL_CARDS_ON_GUI) {
@@ -227,6 +230,7 @@ public class GUI
             } else {
                 UI.println("Card " + cardId + " Details: ");
                 UI.println(card.getName() + ", $" + String.format("%.2f", card.getValue()));
+                UI.println();
             }
         }
     }
@@ -236,7 +240,7 @@ public class GUI
      * Only allow new Pokemon to be added to the collection (no double ups).
      */
     private void addCard() {
-        if (this.collection.getCurrCardId() == 10) {
+        if (this.collection.getCardIdTracker() == TOTAL_CARDS_ON_GUI) {
             UI.println("Any extra cards added will not have all info displayed on the GUI.");
             UI.println("When displaying all info, check the left text panel for the text info.");
         }
@@ -256,7 +260,7 @@ public class GUI
             
             // add new card to collection
             this.collection.addCard(name, value, imgFileName);
-            UI.println("Card added successfully.");
+            UI.println("Card added.");
         }
     }
     
@@ -269,7 +273,7 @@ public class GUI
     }
     
     /**
-     * Main routine.
+     * Main routine
      */
     public static void main(String[] args) {
         new GUI();
