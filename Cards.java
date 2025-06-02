@@ -46,25 +46,6 @@ public class Cards {
   }
 
   /**
-   * Search for a Pokemon card in the collection by using its name.
-   *
-   * @param name the name of the card
-   * @return true if a match is found, or false if there's no match
-   */
-  public boolean findCard(String name) {
-    // search through each key in the hashmap
-    for (int cardId : collection.keySet()) {
-      // if card name matches (was found)
-      if (collection.get(cardId).getName().equals(name)) {
-        // save the card match found in currCard variable
-        this.currCard = this.collection.get(cardId);
-        return true;
-      }
-    }
-    return false; // no match was found
-  }
-
-  /**
    * Add a new Pokemon card (without an image path) to the collection.
    *
    * @param name the card's name
@@ -86,6 +67,34 @@ public class Cards {
     this.setCardIdTracker(); // set unique ID
     collection.put(cardIdTracker, new Card(cardIdTracker, name, value, img));
   }
+  
+  /**
+   * Search for a Pokemon card in the collection by using its name.
+   *
+   * @param name the name of the card
+   * @return true if a match is found, or false if there's no match
+   */
+  public boolean findCard(String name) {
+    // search through each key in the hashmap
+    for (int cardId : collection.keySet()) {
+      // if card name matches (was found)
+      if (collection.get(cardId).getName().equals(name)) {
+        // save the card match found in currCard variable
+        this.currCard = this.collection.get(cardId);
+        return true;
+      }
+    }
+    return false; // no match was found
+  }
+  
+  /**
+   * Retrieve a Card object in the collection by its unique ID.
+   *
+   * @return Card
+   */
+  public Card getCardById(int id) {
+    return this.collection.get(id);
+  }
 
   /**
    * Retrieve the most recent Card object found.
@@ -94,15 +103,6 @@ public class Cards {
    */
   public Card getCurrCard() {
     return this.currCard;
-  }
-
-  /**
-   * Retrieve a Card object in the collection by its unique ID.
-   *
-   * @return Card
-   */
-  public Card getCardById(int id) {
-    return this.collection.get(id);
   }
   
   /**

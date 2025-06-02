@@ -6,8 +6,8 @@ import ecs100.*;
  * It passes info to the Cards class to manage the collection, and displays card info.
  * Functions include:
  * - Adding a new Pokemon card to the collection;
- * - Displaying all Pokemon cards currently in the collection;
  * - Searching for and displaying a specific card;
+ * - Displaying all Pokemon cards currently in the collection;
  * - Hiding all displayed cards.
  *
  * @author (HFJ)
@@ -20,16 +20,16 @@ public class GUI {
     
   // collection image display
   private static final int MAX_ROWS_ON_GUI = 3; // max full rows able to be displayed
-  private static final int CARDS_PER_ROW = 5;
+  private static final int CARDS_PER_ROW = 5;   // max capacity of each row
   private static final int TOTAL_CARDS_ON_GUI = MAX_ROWS_ON_GUI * CARDS_PER_ROW;
     
-  // multiple image spacing and dimensions
+  // image spacing if multiple are being displayed, with dimensions
   private static final double IMG_SPACING = 60;
   private static final double TEXT_VERT_SPACING = IMG_SPACING / 3;
   private static final double MULTIPLE_WIDTH = 129;
   private static final double MULTIPLE_HEIGHT = 180;
     
-  // single image dimensions
+  // image dimensions for a single image being displayed
   private static final double SINGLE_X = 50; // top left corner x positioning
   private static final double SINGLE_Y = 50; // top left corner y positioning
   private static final double SINGLE_WIDTH = 350;
@@ -55,23 +55,7 @@ public class GUI {
   }
     
   /**
-   * Handles mouse interaction.
-   * Hides a card by mouse click if it is currently being displayed.
-   *
-   * @param action which tracks the user mouse action 
-   * @param x      corresponding to the mouse's X position
-   * @param y      corresponding to the mouse's Y position
-   */
-  public void doMouse(String action, double x, double y) {
-    if (action.equals("clicked") && currCard != null 
-           && currCard.onCard(x, y, SINGLE_X, SINGLE_Y, SINGLE_WIDTH, SINGLE_HEIGHT)) {
-      this.currCard = null;
-      UI.clearPanes();
-    }
-  }
-    
-  /**
-   * Add a new card to the collection and checks for duplicates.
+   * Adds a new card to the collection and checks for duplicates.
    */
   private void addCard() {
     // warn the user if all GUI space is full
@@ -101,7 +85,7 @@ public class GUI {
   }
     
   /**
-   * Searches for a card by the Pokemon's name and display it if found.
+   * Searches for a card by the Pokemon's name and displays it if found.
    * Prints an error message if there is no match.
    */
   private void displayOne() {
@@ -121,18 +105,35 @@ public class GUI {
           SINGLE_HEIGHT, TEXT_VERT_SPACING);
     } else {
       UI.println("You don't have this card in your collection.");
+      UI.println();
+    }
+  }
+      
+  /**
+   * Handles mouse interaction.
+   * Hides a card by mouse click if it is currently being displayed.
+   *
+   * @param action tracks the user's mouse action 
+   * @param x      x positioning of the mouse
+   * @param y      y positioning of the mouse
+   */
+  public void doMouse(String action, double x, double y) {
+    if (action.equals("clicked") && currCard != null 
+           && currCard.onCard(x, y, SINGLE_X, SINGLE_Y, SINGLE_WIDTH, SINGLE_HEIGHT)) {
+      clearAll();
     }
   }
     
   /**
-   * Display all the cards' images and info in the collection on the GUI in rows.
-   * If there is no more space on the GUI, the remaining cards' info are printed as text.
+   * Displays all the cards' images and info in the collection on the GUI in rows.
+   * If there is no more space on the GUI, any remaining cards' info are printed as text.
    */
   public void displayAll() {
     // variables
     int cardInRow = 0;
     int row = 1;
-        
+    clearAll();
+    
     // prepare for card overflow
     UI.println("Any GUI card overflow printed here!");
     UI.println();
@@ -143,14 +144,14 @@ public class GUI {
       if (cardId <= TOTAL_CARDS_ON_GUI) {
         cardInRow++; // increase no. of cards in the row
             
-        // change X/Y positioning for each new card displayed
+        // change X and Y positioning for each new card displayed
         double locX = (IMG_SPACING * cardInRow) + (MULTIPLE_WIDTH * (cardInRow - 1));
         double locY = (IMG_SPACING / 2 * row) 
             + ((MULTIPLE_HEIGHT + IMG_SPACING - TEXT_VERT_SPACING) * (row - 1));
         
         // draw the card's image and display details
         card.display(locX, locY, MULTIPLE_WIDTH, MULTIPLE_HEIGHT, TEXT_VERT_SPACING);
-            
+        
         // check if new row needs to be started
         if (cardInRow == CARDS_PER_ROW) {
           row++; // start a new row
@@ -166,9 +167,10 @@ public class GUI {
   }
     
   /**
-   * Hide all card info currently being displayed in the GUI.
+   * Hides any card info currently being displayed in the GUI.
    */
   private void clearAll() {
+    currCard = null; // prevent accidental redisplayment of card
     UI.clearPanes();
   }
     

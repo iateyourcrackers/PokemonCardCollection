@@ -45,6 +45,12 @@ public class Card {
   /**
    * Check if the mouse's click (mx, my) is within the image bounds.
    *
+   * @param mx      x position of the mouse click
+   * @param my      y position of the mouse click
+   * @param x       x boundary (left side) of the card
+   * @param y       y boundary (top) of the card
+   * @param width   width of the card
+   * @param height  height of the card
    * @return true if (mx, my) is within the card area; false otherwise
    */
   public boolean onCard(double mx, double my, double x, double y, double width, double height) {
@@ -53,10 +59,16 @@ public class Card {
     
   /**
    * Draw the card's image and info on the GUI.
+   *
+   * @param x           x positioning of the card (top left corner)
+   * @param y           y positioning of the card (top left corner)
+   * @param width       width of the card
+   * @param height      height of the card
+   * @param textSpacing vertical spacing of the info text
    */
   public void display(double x, double y, double width, double height, double textSpacing) {
     UI.drawImage(this.image, x, y, width, height);
-    // text info
+    // draw text info below the image
     UI.drawString("Card " + this.id + " Details: ", x, y + height + textSpacing);
     UI.drawString(this.name + ", $" + String.format("%.2f", this.value), 
                        x, y + height + 2 * textSpacing);
