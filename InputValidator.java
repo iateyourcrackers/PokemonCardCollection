@@ -11,109 +11,116 @@ import ecs100.*;
  * @version (2/6/25)
  */
 public class InputValidator {
-    // instance variables
-    private static final double MAX_VALUE = 260000.0; // see README.TXT file
-    private static final double MIN_VALUE = 0;
-    private static final int MIN_STRING_LENGTH = 3;   // see README.TXT file
-    private static final int MAX_STRING_LENGTH = 12;
+  // instance variables
+  private static final double MAX_VALUE = 260000.0; // see README.TXT file
+  private static final double MIN_VALUE = 0;
+  private static final int MIN_STRING_LENGTH = 3;   // see README.TXT file
+  private static final int MAX_STRING_LENGTH = 12;
 
-    /**
-     * Checks the validity of a double input (monetary value) from the user.
-     * - Must be an number.
-     * - Must be within $0.0 - $260,000.0 range (inclusive).
-     * - Loops until a valid value is entered.
-     * @return the validated (and rounded) value of the card.
-     */
-    public static double checkValue() {
-      double value;
-        
-      // check the boundaries for the card's price
-      do {
-        value = UI.askDouble("Enter the card's monetary value: ");
-        
-        if ((value >= MIN_VALUE) && (value <= MAX_VALUE)) {
-          UI.println("Value accepted.");
-        } else if (value > MAX_VALUE) {
-          UI.println("That's almost the price of a house these days woah");
-          UI.println("Try again - the value must be equal to/less than $260,000.");
-          UI.println();
-        } else if (value < MIN_VALUE) {
-          UI.println("The value must be equal to/greater than 0.");
-          UI.println();
-        } else {
-          UI.println("Please enter a number.");
-          UI.println();
-        }
-      } while (MIN_VALUE > value || value > MAX_VALUE);
-        
-      // round the entered value to 2dp
-      double roundedValue = Math.round(value * 100.0) / 100.0;
-      UI.println();
-      return roundedValue;
-    }
+  /**
+   * Checks the validity of a double input (monetary value) from the user.
+   * - Must be an number.
+   * - Must be within $0.0 - $260,000.0 range (inclusive).
+   * - Loops until a valid value is entered.
+   *
+   * @return the validated (and rounded) value of the card.
+   */
+  public static double checkValue() {
+    //variables
+    double value;
     
-    /**
-     * Check the validitiy of a String input (Pokemon's name) from the user.
-     * - Input must be within the 3 - 12 character range (inclusive).
-     * - Loops until a valid name is entered.
-     * @return capitalised and trimmed name of the card.
-     */
-    public static String checkString() {
-      // variables
-      String name;
+    // check the boundaries for the card's price
+    do {
+      value = UI.askDouble("Enter the card's monetary value: ");
+    
+      if ((value >= MIN_VALUE) && (value <= MAX_VALUE)) {
+        UI.println("Value accepted.");
+      } else if (value > MAX_VALUE) {
+        UI.println("That's almost the price of a house these days woah");
+        UI.println("Try again - the value must be equal to/less than $260,000.");
+        UI.println();
+      } else if (value < MIN_VALUE) {
+        UI.println("The value must be equal to/greater than 0.");
+        UI.println();
+      } else {
+        UI.println("Please enter a number.");
+        UI.println();
+      }
+    } while (MIN_VALUE > value || value > MAX_VALUE);
+    
+    // round the entered value to 2dp
+    double roundedValue = Math.round(value * 100.0) / 100.0;
+    UI.println();
+    return roundedValue;
+  }
+    
+  /**
+   * Check the validitiy of a String input (Pokemon's name) from the user.
+   * - Input must be within the 3 - 12 character range (inclusive).
+   * - Loops until a valid name is entered.
+   *
+   * @return capitalised and trimmed name of the card.
+   */
+  public static String checkString() {
+    // variables
+    String name;
         
-      // keep asking until a valid name is entered
-      do {
-        name = UI.askString("Enter the Pokemon's name: ").trim().toUpperCase();  // for case-insensitive comparison
+    // keep asking until a valid name is entered
+    do {
+      // whitespace/case-insensitive comparison
+      name = UI.askString("Enter the Pokemon's name: ").trim().toUpperCase();
         
-        if (name == null || name.isEmpty()) {
-          UI.println("Hey enter something here please");
-          UI.println();
-        } else if (name.length() > MAX_STRING_LENGTH) {
-          UI.println("This Pokemon name is too long (does this Pokemon actually exist?)");
-          UI.println();
-        } else if (name.length() < MIN_STRING_LENGTH) {
-          UI.println("This Pokemon name is too short (does this Pokemon actually exist?)");
-          UI.println();
-        } 
-      } while (name == null || name.isEmpty()
+      if (name == null || name.isEmpty()) {
+        UI.println("Hey enter something here please");
+        UI.println();
+      } else if (name.length() > MAX_STRING_LENGTH) {
+        UI.println("This Pokemon name is too long (does this Pokemon actually exist?)");
+        UI.println();
+      } else if (name.length() < MIN_STRING_LENGTH) {
+        UI.println("This Pokemon name is too short (does this Pokemon actually exist?)");
+        UI.println();
+      } 
+    } while (name == null || name.isEmpty()
         || name.length() > MAX_STRING_LENGTH || name.length() < MIN_STRING_LENGTH);
         
-      UI.println();
-      return name;
-    }
+    UI.println();
+    return name;
+  }
     
-    /**
-     * Check the validity of a String input from the user.
-     * - Must be an image with the filetype of jpeg, jpg, png. Webp are not 
-     * accepted as BlueJ doesn't support their file type.
-     * - Loops until a valid image path is entered.
-     * @return the path to the card's image.
-     */
-    public static String checkImage() {
-      boolean loop = true;
+  /**
+   * Check the validity of a String input from the user.
+   * - Must be an image with the filetype of jpeg, jpg, png. Webp are not 
+   * accepted as BlueJ doesn't support their file type.
+   * - Loops until a valid image path is entered.
+   *
+   * @return the path to the card's image.
+   */
+  public static String checkImage() {
+    // variables
+    boolean loop = true;
         
-      // loop until a valid image path is chosen
-      while (loop) {
-        String imgFile = UIFileChooser.open("Choose Image File (.jpg/.jpeg/.png): ");
+    // loop until a valid image path is chosen
+    while (loop) {
+      String imgFile = UIFileChooser.open("Choose Image File (.jpg/.jpeg/.png): ");
         
-        // resort to default image if user clicks 'cancel'
-        if (imgFile == null) {
-          UI.println("Using the default image...");
-          return null;
-        } 
+      // resort to default image if user clicks 'cancel'
+      if (imgFile == null) {
+        UI.println("Using the default image...");
+        return null;
+      } 
+    
+       // case-insensitive comparison
+      String lower = imgFile.toLowerCase();
         
-        String lower = imgFile.toLowerCase(); // case-insensitive comparison
-        
-        if (lower.endsWith(".jpg") || lower.endsWith(".jpeg") 
-        || lower.endsWith(".png")) {
-          // return valid image path
-          return imgFile;
-        } else {
-          UI.println("That's not a valid image file. Please choose a .jpg or .jpeg or .png.");
-        } 
-      }
-        
-      return null; // default image
+      if (lower.endsWith(".jpg") || lower.endsWith(".jpeg") 
+          || lower.endsWith(".png")) {
+        // return valid image path
+        return imgFile;
+      } else {
+        UI.println("That's not a valid image file. Please choose a .jpg or .jpeg or .png.");
+      } 
     }
+        
+    return null; // default image
+  }
 }
